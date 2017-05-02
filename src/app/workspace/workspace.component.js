@@ -41,7 +41,7 @@ __decorate([
 WorkspaceComponent = __decorate([
     core_1.Component({
         selector: 'workspace',
-        template: "\n    <h2>{{article.title}}</h2>\n    <div >\n      <div *ngFor=\"let sentence of article.sentences; let sent_i=index\" style=\"display:flex;flex-wrap:wrap\">\n        <word-tag *ngFor=\"let w of sentence; let word_i=index\"\n            [attr.id]=\"sent_i + '_' + word_i\"\n\n            [word]=\"w\" \n            (click) = \"tagWord(sent_i,word_i)\"\n        > \n        </word-tag>\n        <br/>\n        <br/>\n      </div>\n    </div>\n    ",
+        template: "\n    <h2>{{article.title}}</h2>\n    <div>\n      <div *ngFor=\"let sentence of article.sentences; let sent_i=index\" style=\"display:flex;flex-wrap:wrap\">\n        <word-tag *ngFor=\"let w of sentence; let word_i=index\"\n            [attr.id]=\"sent_i + '_' + word_i\"\n\n            [word]=\"w\" \n            (click) = \"tagWord(sent_i,word_i)\"\n        > \n        </word-tag>\n        <br/>\n        <br/>\n      </div>\n    </div>\n    ",
         styles: ["\n    .word:hover {\n        background-color: lightblue;\n    }\n    "]
     })
 ], WorkspaceComponent);

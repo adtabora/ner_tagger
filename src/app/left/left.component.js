@@ -35,7 +35,7 @@ __decorate([
 LeftPanelComponent = __decorate([
     core_1.Component({
         selector: 'left-panel',
-        template: "\n  \n    \n      <md-list dense>\n        <h3 md-subheader>To Do Articles</h3>\n        <md-list-item *ngFor=\"let article of todo\"\n          (click)=\"selectArticle(article)\"\n        >\n            <md-icon md-list-icon>folder</md-icon>\n           \n            <p md-line class=\"demo-2\"> {{article.title}} </p>\n        </md-list-item>\n\n        <md-divider></md-divider>\n\n        <h3 md-subheader>Done Articles</h3>\n        <md-list-item *ngFor=\"let article of done\"\n          (click)=\"selectArticle(article)\"\n        >\n            <md-icon md-list-icon>note</md-icon>\n            <p md-line class=\"demo-2\"> {{article.title}} </p>\n        </md-list-item>\n      </md-list>\n    \n  \n    \n    "
+        template: "\n  \n    \n      <md-list dense *ngIf=\"todo\">\n        <h3 md-subheader>To Do Articles</h3>\n        <md-list-item *ngFor=\"let article of todo\"\n          (click)=\"selectArticle(article)\"\n        >\n            <md-icon md-list-icon>folder</md-icon>\n           \n            <p md-line class=\"demo-2\"> {{article.title}} </p>\n        </md-list-item>\n\n        <md-divider></md-divider>\n\n        <h3 md-subheader>Done Articles</h3>\n        <md-list-item *ngFor=\"let article of done\"\n          (click)=\"selectArticle(article)\"\n        >\n            <md-icon md-list-icon>note</md-icon>\n            <p md-line class=\"demo-2\"> {{article.title}} </p>\n        </md-list-item>\n      </md-list>\n    \n  \n    \n    "
     })
 ], LeftPanelComponent);
 exports.LeftPanelComponent = LeftPanelComponent;

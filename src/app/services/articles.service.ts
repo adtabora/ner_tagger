@@ -1,70 +1,54 @@
 import { Injectable } from '@angular/core';
 import {tagged_word} from '../workspace/word.class'
+import { Headers, Http , RequestOptions} from '@angular/http';
+
+
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ArticlesService {
 
-   
+   constructor(private http: Http) { }
      
+   listUrl = "http://127.0.0.1:5000/article/list"
+   getUrl = "http://127.0.0.1:5000/article/get/"
+   saveUrl = "http://127.0.0.1:5000/article/save"
 
-    getToDoArticles(): any[]{
-        let articles = [
-            {id: 89, title: "Article 89"},
-            {id: 90, title: "Article 90"},
-            {id: 91, title: "Article 91"},
-            {id: 92, title: "Article 92"},
-            {id: 93, title: "Article 93"}
-        ]
-        return articles
-    }
-
-    getDoneArticles(): any{
-        let articles = [
-            {id: 71, title: "Article 79"},
-            {id: 80, title: "Article 80"},
-            {id: 81, title: "Article 81"},
-            {id: 82, title: "Article 82"},
-            {id: 83, title: "Article 83"}
-        ]
-
-        return articles
+    listArticles(): Promise<any>{
+        return this.http.get(this.listUrl)
+               .toPromise()
+               .then(function(response){
+                    return response.json();
+               })
+               .catch(this.handleError);
     }
 
     getArticle(id:number): any{
-        let articles =[{
-            id:89, title: "Article 89", 
-            sentences:[ 
-                [{word:"El",tag:"none"},{word:"capitan",tag:"none"},{word:"Jorge",tag:"none"},{word:"Lagos",tag:"none"}],
-                [{word:"Segun",tag:"none"},{word:"fuentes",tag:"none"},{word:"la",tag:"none"},{word:"direccion",tag:"none"}],
-                [{word:"Cuando",tag:"none"},{word:"el",tag:"none"},{word:"conductor",tag:"none"},{word:"fue",tag:"none"}],
-             ]
-        },{
-            id:90, title: "Article 90", 
-            sentences:[ 
-                [{word:"Hoy",tag:"none"},{word:"a",tag:"none"},{word:"las",tag:"none"},{word:"10:30",tag:"none"}],
-                [{word:"Observadores",tag:"none"},{word:"pudieron",tag:"none"},{word:"identificar",tag:"none"},{word:"una",tag:"none"}],
-                [{word:"Cerca",tag:"none"},{word:"de",tag:"none"},{word:"la",tag:"none"},{word:"Canada",tag:"none"}],
-             ]
-        },{
-            id:71, title: "Article 71", 
-            sentences:[ 
-                [{word:"Miles",tag:"none"},{word:"de",tag:"none"},{word:"hondurenos",tag:"none"},{word:"tendran",tag:"none"}],
-                [{word:"Segun",tag:"none"},{word:"fuentes",tag:"none"},{word:"la",tag:"none"},{word:"direccion",tag:"none"}],
-                [{word:"La",tag:"none"},{word:"Institucion",tag:"none"},{word:"del",tag:"none"},{word:"Trabajador",tag:"none"}],
-             ]
-        },{
-            id:80, title: "Article 80", 
-            sentences:[ 
-                [{word:"Los",tag:"none"},{word:"migrantes",tag:"none"},{word:"tendran",tag:"none"},{word:"que",tag:"none"}],
-                [{word:"Segun",tag:"none"},{word:"fuentes",tag:"none"},{word:"la",tag:"none"},{word:"direccion",tag:"none"}],
-                [{word:"Cuando",tag:"none"},{word:"el",tag:"none"},{word:"conductor",tag:"none"},{word:"fue",tag:"none"}],
-             ]
-        }
-        ]
+        return this.http.get(this.getUrl+id)
+               .toPromise()
+               .then(function(response){
+                    console.log(response.json());
+                    return response.json();
+               })
+               .catch(this.handleError);
+    }
 
-        let art = articles.find(x => x.id === id);
+    //TODO: implement Save Article.
+    saveArticle(id:number,sentences:any[]): any{
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return art
+        return this.http.post(this.saveUrl,{id:id, sentences:sentences}, options)
+               .toPromise()
+               .then(function(response){
+                    console.log(response.json());
+                    return response.json();
+               })
+               .catch(this.handleError);
+    }
+
+    handleError(){
+        console.log("HTTP ERROR")
     }
 
 

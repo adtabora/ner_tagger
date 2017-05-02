@@ -5,69 +5,57 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+require("rxjs/add/operator/toPromise");
 var ArticlesService = (function () {
-    function ArticlesService() {
+    function ArticlesService(http) {
+        this.http = http;
+        this.listUrl = "http://127.0.0.1:5000/article/list";
+        this.getUrl = "http://127.0.0.1:5000/article/get/";
+        this.saveUrl = "http://127.0.0.1:5000/article/save";
     }
-    ArticlesService.prototype.getToDoArticles = function () {
-        var articles = [
-            { id: 89, title: "Article 89" },
-            { id: 90, title: "Article 90" },
-            { id: 91, title: "Article 91" },
-            { id: 92, title: "Article 92" },
-            { id: 93, title: "Article 93" }
-        ];
-        return articles;
-    };
-    ArticlesService.prototype.getDoneArticles = function () {
-        var articles = [
-            { id: 71, title: "Article 79" },
-            { id: 80, title: "Article 80" },
-            { id: 81, title: "Article 81" },
-            { id: 82, title: "Article 82" },
-            { id: 83, title: "Article 83" }
-        ];
-        return articles;
+    ArticlesService.prototype.listArticles = function () {
+        return this.http.get(this.listUrl)
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        })
+            .catch(this.handleError);
     };
     ArticlesService.prototype.getArticle = function (id) {
-        var articles = [{
-                id: 89, title: "Article 89",
-                sentences: [
-                    [{ word: "El", tag: "none" }, { word: "capitan", tag: "none" }, { word: "Jorge", tag: "none" }, { word: "Lagos", tag: "none" }],
-                    [{ word: "Segun", tag: "none" }, { word: "fuentes", tag: "none" }, { word: "la", tag: "none" }, { word: "direccion", tag: "none" }],
-                    [{ word: "Cuando", tag: "none" }, { word: "el", tag: "none" }, { word: "conductor", tag: "none" }, { word: "fue", tag: "none" }],
-                ]
-            }, {
-                id: 90, title: "Article 90",
-                sentences: [
-                    [{ word: "Hoy", tag: "none" }, { word: "a", tag: "none" }, { word: "las", tag: "none" }, { word: "10:30", tag: "none" }],
-                    [{ word: "Observadores", tag: "none" }, { word: "pudieron", tag: "none" }, { word: "identificar", tag: "none" }, { word: "una", tag: "none" }],
-                    [{ word: "Cerca", tag: "none" }, { word: "de", tag: "none" }, { word: "la", tag: "none" }, { word: "Canada", tag: "none" }],
-                ]
-            }, {
-                id: 71, title: "Article 71",
-                sentences: [
-                    [{ word: "Miles", tag: "none" }, { word: "de", tag: "none" }, { word: "hondurenos", tag: "none" }, { word: "tendran", tag: "none" }],
-                    [{ word: "Segun", tag: "none" }, { word: "fuentes", tag: "none" }, { word: "la", tag: "none" }, { word: "direccion", tag: "none" }],
-                    [{ word: "La", tag: "none" }, { word: "Institucion", tag: "none" }, { word: "del", tag: "none" }, { word: "Trabajador", tag: "none" }],
-                ]
-            }, {
-                id: 80, title: "Article 80",
-                sentences: [
-                    [{ word: "Los", tag: "none" }, { word: "migrantes", tag: "none" }, { word: "tendran", tag: "none" }, { word: "que", tag: "none" }],
-                    [{ word: "Segun", tag: "none" }, { word: "fuentes", tag: "none" }, { word: "la", tag: "none" }, { word: "direccion", tag: "none" }],
-                    [{ word: "Cuando", tag: "none" }, { word: "el", tag: "none" }, { word: "conductor", tag: "none" }, { word: "fue", tag: "none" }],
-                ]
-            }
-        ];
-        var art = articles.find(function (x) { return x.id === id; });
-        return art;
+        return this.http.get(this.getUrl + id)
+            .toPromise()
+            .then(function (response) {
+            console.log(response.json());
+            return response.json();
+        })
+            .catch(this.handleError);
+    };
+    //TODO: implement Save Article.
+    ArticlesService.prototype.saveArticle = function (id, sentences) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.saveUrl, { id: id, sentences: sentences }, options)
+            .toPromise()
+            .then(function (response) {
+            console.log(response.json());
+            return response.json();
+        })
+            .catch(this.handleError);
+    };
+    ArticlesService.prototype.handleError = function () {
+        console.log("HTTP ERROR");
     };
     return ArticlesService;
 }());
 ArticlesService = __decorate([
-    core_1.Injectable()
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http])
 ], ArticlesService);
 exports.ArticlesService = ArticlesService;
 //# sourceMappingURL=articles.service.js.map

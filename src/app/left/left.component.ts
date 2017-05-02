@@ -7,7 +7,7 @@ import { Component, Input, Output,EventEmitter } from '@angular/core';
   template: `
   
     
-      <md-list dense>
+      <md-list dense *ngIf="todo">
         <h3 md-subheader>To Do Articles</h3>
         <md-list-item *ngFor="let article of todo"
           (click)="selectArticle(article)"

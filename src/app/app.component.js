@@ -20,19 +20,37 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         this.getArticleList();
-        this.getArticle(this.todo[0].id);
     };
     AppComponent.prototype.setTag = function (obj) {
         this.tag = obj.tag;
         this.color = obj.color;
     };
     AppComponent.prototype.getArticleList = function () {
-        this.todo = this.articleService.getToDoArticles();
-        this.done = this.articleService.getDoneArticles();
+        var self = this;
+        this.articleService.listArticles().then(function (lists) {
+            console.log("----");
+            console.log(lists);
+            self.todo = lists.todo;
+            self.done = lists.done;
+            self.getArticle(self.todo[0].id);
+        });
     };
     AppComponent.prototype.getArticle = function (id) {
-        console.log("SET ARTICLE");
-        this.article = this.articleService.getArticle(id);
+        var self = this;
+        this.articleService.getArticle(id).then(function (article) {
+            console.log("----");
+            console.log(article);
+            self.article = article;
+        });
+    };
+    AppComponent.prototype.saveArticle = function () {
+        var self = this;
+        this.articleService.saveArticle(this.article.id, this.article.sentences)
+            .then(function (response) {
+            console.log("----");
+            console.log(response);
+            this.getArticleList();
+        });
     };
     return AppComponent;
 }());
@@ -40,7 +58,7 @@ AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
         providers: [articles_service_1.ArticlesService],
-        template: "\n  <md-sidenav-container style=\"height:100vh;\">\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\">\n      <left-panel\n        [todo]=\"todo\"\n        [done]=\"done\"\n        (setArticle)=\"getArticle($event)\"\n      ></left-panel>\n    </md-sidenav>\n\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\" align=\"end\">\n      <right-panel\n        (setTag)=\"setTag($event)\"\n      ></right-panel>\n    </md-sidenav>\n\n    <div class=\"workspace\">\n      <workspace\n        [tag]= \"tag\" \n        [color]= \"color\" \n        [article]= \"article\" \n      ></workspace>\n    </div>\n\n  </md-sidenav-container>\n    ",
+        template: "\n  <md-sidenav-container style=\"height:100vh;\">\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\">\n      <left-panel\n        [todo]=\"todo\"\n        [done]=\"done\"\n        (setArticle)=\"getArticle($event)\"\n      ></left-panel>\n    </md-sidenav>\n\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\" align=\"end\">\n      <right-panel\n        (setTag)=\"setTag($event)\"\n      ></right-panel>\n    </md-sidenav>\n\n    <div class=\"workspace\" *ngIf=\"article\">\n      <md-toolbar>\n        <button md-raised-button color=\"primary\" (click)=\"saveArticle()\">\n          Save\n        </button>\n      </md-toolbar>\n      <workspace\n        [tag]= \"tag\" \n        [color]= \"color\" \n        [article]= \"article\" \n      ></workspace>\n    </div>\n\n  </md-sidenav-container>\n    ",
         styles: ["\n    .container {\n      display: flex; \n    }\n\n\n    .right {\n      background:lightcyan;\n      min-width: 140px;\n      max-width: 200px;\n      padding: 1em;\n    }\n\n    .workspace {\n      background:lightyellow;\n      padding: 1em;\n      width: 100%;\n    }\n\n  "]
     }),
     __metadata("design:paramtypes", [articles_service_1.ArticlesService])

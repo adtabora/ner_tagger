@@ -7,7 +7,7 @@ import {tagged_word} from './word.class'
   selector: 'workspace',
   template: `
     <h2>{{article.title}}</h2>
-    <div >
+    <div>
       <div *ngFor="let sentence of article.sentences; let sent_i=index" style="display:flex;flex-wrap:wrap">
         <word-tag *ngFor="let w of sentence; let word_i=index"
             [attr.id]="sent_i + '_' + word_i"
@@ -33,9 +33,6 @@ export class WorkspaceComponent {
   @Input() color: String
   @Input() article: any
   
-
-
-
   tagWord(sent_id: number,  word_id: number ): void{
     console.log("TAG")
     console.log(sent_id + "-" + word_id)

@@ -20,7 +20,12 @@ import { ArticlesService } from './services/articles.service';
       ></right-panel>
     </md-sidenav>
 
-    <div class="workspace">
+    <div class="workspace" *ngIf="article">
+      <md-toolbar>
+        <button md-raised-button color="primary" (click)="saveArticle()">
+          Save
+        </button>
+      </md-toolbar>
       <workspace
         [tag]= "tag" 
         [color]= "color" 
@@ -64,7 +69,6 @@ export class AppComponent {
 
   ngOnInit(): void{
     this.getArticleList()
-    this.getArticle(this.todo[0].id)
   }
 
   setTag(obj:any):void{
@@ -73,13 +77,35 @@ export class AppComponent {
   }
 
   getArticleList():void{
-    this.todo = this.articleService.getToDoArticles();
-    this.done = this.articleService.getDoneArticles();
+    var self = this;
+    this.articleService.listArticles().then(function(lists){
+      console.log("----")
+      console.log(lists)
+      self.todo = lists.todo; 
+      self.done = lists.done; 
+      self.getArticle(self.todo[0].id)
+    });
   }
 
   getArticle(id:number):void{
-    console.log("SET ARTICLE")
-    this.article = this.articleService.getArticle(id);
+    var self = this;
+    this.articleService.getArticle(id).then(function(article:any){
+      console.log("----")
+      console.log(article)
+      self.article = article
+
+    });
+  }
+
+    saveArticle():void{
+    var self = this;
+
+    this.articleService.saveArticle(this.article.id,this.article.sentences)
+    .then(function(response:any){
+      console.log("----")
+      console.log(response)
+      this.getArticleList()
+    });
   }
 
   constructor(private articleService: ArticlesService) { }
