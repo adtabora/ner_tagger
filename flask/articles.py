@@ -1,7 +1,6 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-from flask import request
+import processor
 app = Flask(__name__)
 CORS(app)
 
@@ -9,31 +8,19 @@ import pandas as pd
 import numpy as np
 
 
-def initializeSentences():
-    tagged_df = pd.read_json("../files/tagged_articles.json")
-
-    sentences_df = pd.DataFrame()
-    sentences_df.loc[:,"article_id"] = tagged_df.article_id
-    sentences_df.loc[:,"sent_id"] = tagged_df.sent_id
-    sentences_df.loc[:,"words"] = tagged_df.tagged_sent.apply(lambda sent: [ {"word":word[0],"tag":"none"} for word in sent])
-    sentences_df.loc[:, "done"] = False
-
-    sentences_df.to_json("../files/sentences.json")
-    return sentences_df
-    
-@app.route("/hello")
-def hello():
-    return "hello"
 
 @app.route("/article/list")
 def getArticleList():
     try:
-        sentences_df = pd.read_json("../files/sentences.json")
+        processed_df = pd.read_json("../files/processed.json")
     except Exception, e:
-        sentences_df = initializeSentences()
+        processed_df = processor.process_articles()
+
+    #a temporary pagination limit. TODO: Change for a parameter
+    processed_df = processed_df[processed_df["article_id"]<100]
     
-    todo = sentences_df[sentences_df["done"]==False].article_id.unique()
-    done = sentences_df[sentences_df["done"]==True].article_id.unique()
+    todo = processed_df[processed_df["done"]==False].article_id
+    done = processed_df[processed_df["done"]==True].article_id
 
     todo= np.sort(todo).tolist()
     done= np.sort(done).tolist()
@@ -45,35 +32,53 @@ def getArticleList():
 
 @app.route("/article/get/<id>")
 def getArticle(id):
-    
-    sentences_df = pd.read_json("../files/sentences.json")
-    article_sentences = sentences_df[sentences_df["article_id"]==int(id)]
-    
-    sentences = []
-    for index,row in article_sentences.sort_values(by="sent_id").iterrows():
-        sentences.append(row.words)
+    processed_df = pd.read_json("../files/processed.json")
+
+    article = processed_df[processed_df["article_id"]==int(id)]
+    location = article.location.values[0]
+    category = article.category.values[0]
+    sentences = article.sentences.values[0]
+    title = article.title.values[0]
 
 
-    return jsonify({"id":int(id), "title":"Article "+id, "sentences":sentences})
+    return jsonify({
+        "id":int(id), 
+        "title": title,
+        "location": location,
+        "category": category,
+        "sentences":sentences
+    })
 
 @app.route("/article/save", methods=['POST'])
 def saveArticle():
 
     print "-----"
-
     # print request.data
     json_obj = request.get_json()
     art_id = json_obj["id"]
     art_sent = json_obj["sentences"]
-    print art_sent[0]
+    location = json_obj["location"]
+    category = json_obj["category"]
 
-    sentences_df = pd.read_json("../files/sentences.json")
-    index = sentences_df[sentences_df["article_id"]==int(art_id)].index
+    #read processed
+    processed_df = pd.read_json("../files/processed.json")
+    index = processed_df[processed_df["article_id"]==int(art_id)].index[0]
 
-    sentences_df.loc[index,"words"] = art_sent 
-    sentences_df.loc[index,"done"] = True
+    print "-----INDEX-------"
+    print index
+    print type(art_sent)
 
-    sentences_df.to_json("../files/sentences.json")
+    print "- setting values"
+    processed_df.loc[index,"location"] = location 
+    processed_df.loc[index,"category"] = category
+
+    processed_df["sentences"][index] = art_sent
+
+   
+    processed_df.loc[index,"done"] = True
+    
+    print "- saving processed json"
+    processed_df.to_json("../files/processed.json")
 
     return jsonify({"saved":True})
 
