@@ -31,19 +31,17 @@ var ArticlesService = (function () {
         return this.http.get(this.getUrl + id)
             .toPromise()
             .then(function (response) {
-            console.log(response.json());
             return response.json();
         })
             .catch(this.handleError);
     };
     //TODO: implement Save Article.
-    ArticlesService.prototype.saveArticle = function (id, sentences) {
+    ArticlesService.prototype.saveArticle = function (article) {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.saveUrl, { id: id, sentences: sentences }, options)
+        return this.http.post(this.saveUrl, article, options)
             .toPromise()
             .then(function (response) {
-            console.log(response.json());
             return response.json();
         })
             .catch(this.handleError);

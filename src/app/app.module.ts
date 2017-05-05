@@ -16,6 +16,7 @@ import { RightPanelComponent }  from './right/right.component';
 import { WorkspaceComponent }  from './workspace/workspace.component';
 import { WordComponent }  from './workspace/word.component';
 import {MdChipsModule} from '@angular/material'
+import {MdInputModule} from '@angular/material';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import {MdChipsModule} from '@angular/material'
     MdButtonModule,
     MdListModule,
     MdIconModule,MdSidenavModule,
-    MdChipsModule, MdToolbarModule
+    MdChipsModule, MdToolbarModule,
+    MdInputModule
   ],
   declarations: [
     AppComponent, LeftPanelComponent, RightPanelComponent, WorkspaceComponent, WordComponent

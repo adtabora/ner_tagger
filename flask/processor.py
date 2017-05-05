@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 from nltk.tokenize import wordpunct_tokenize
 
+from db import DB
+import json
+
 
 def process_articles():
     print "- read articles csv"
@@ -12,31 +15,31 @@ def process_articles():
     articles = []
     for art_index, article in base_df.iterrows():
         raw_text = article["content"]
-        raw_title = article["title"]
+        raw_title = unicode(article["title"],"utf8")
 
         soup = bs4.BeautifulSoup(raw_text, 'html.parser')
         text = soup.get_text().replace("\n","")
         sentences = text.split(".")
         sentences = [wordpunct_tokenize(sent) for sent in sentences ]
         for index in range(len(sentences)):
-            sentences[index] = [{"word":word,"tag":"none"} for word in sentences[index]]
+            sentences[index] = [ [word,"none"] for word in sentences[index]]
 
         #append
         articles.append([
             art_index,
             raw_title,
-            sentences
+            "", #category
+            "", #date
+            json.dumps(sentences,encoding="utf-8",ensure_ascii=False),
+            int(False), #reviewed
         ])
 
-    print "- save processed articles to json"
-    processed_df = pd.DataFrame(articles,columns=["article_id","title","sentences"])
-
-    processed_df.loc[:, "done"] = False
-    processed_df.loc[:,"location"] = ""
-    processed_df.loc[:,"category"] = ""
-
-    processed_df.to_json("../files/processed.json")
+    print "- saving to DB"
+    db = DB()
+    # db.createTables()
+    db.insertArticles(articles)
+    db.close()
 
     print "- Done."
 
-    return processed_df
+process_articles()

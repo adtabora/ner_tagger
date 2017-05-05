@@ -38,19 +38,33 @@ var AppComponent = (function () {
     AppComponent.prototype.getArticle = function (id) {
         var self = this;
         this.articleService.getArticle(id).then(function (article) {
-            console.log("----");
-            console.log(article);
+            // console.log("----")
+            // console.log(article)
             self.article = article;
         });
     };
     AppComponent.prototype.saveArticle = function () {
         var self = this;
-        this.articleService.saveArticle(this.article.id, this.article.sentences)
+        this.articleService.saveArticle(this.article)
             .then(function (response) {
-            console.log("----");
-            console.log(response);
-            this.getArticleList();
+            // console.log("----")
+            // console.log(response)
+            // self.getArticleList()
+            self.moveToDone(self.article);
         });
+    };
+    AppComponent.prototype.moveToDone = function (article) {
+        this.done.push({
+            id: article.id,
+            title: "Article " + article.id
+        });
+        var index = this.todo.findIndex(function (art) { return art.id = article.id; });
+        console.log("INDEX-----");
+        console.log(index);
+        if (index > -1) {
+            this.todo.splice(index, 1);
+        }
+        this.getArticle(this.todo[0].id);
     };
     return AppComponent;
 }());
@@ -58,8 +72,8 @@ AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
         providers: [articles_service_1.ArticlesService],
-        template: "\n  <md-sidenav-container style=\"height:100vh;\">\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\">\n      <left-panel\n        [todo]=\"todo\"\n        [done]=\"done\"\n        (setArticle)=\"getArticle($event)\"\n      ></left-panel>\n    </md-sidenav>\n\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\" align=\"end\">\n      <right-panel\n        (setTag)=\"setTag($event)\"\n      ></right-panel>\n    </md-sidenav>\n\n    <div class=\"workspace\" *ngIf=\"article\">\n      <md-toolbar>\n        <button md-raised-button color=\"primary\" (click)=\"saveArticle()\">\n          Save\n        </button>\n      </md-toolbar>\n      <workspace\n        [tag]= \"tag\" \n        [color]= \"color\" \n        [article]= \"article\" \n      ></workspace>\n    </div>\n\n  </md-sidenav-container>\n    ",
-        styles: ["\n    .container {\n      display: flex; \n    }\n\n\n    .right {\n      background:lightcyan;\n      min-width: 140px;\n      max-width: 200px;\n      padding: 1em;\n    }\n\n    .workspace {\n      background:lightyellow;\n      padding: 1em;\n      width: 100%;\n    }\n\n  "]
+        template: "\n  <md-sidenav-container style=\"height:100vh;\">\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\">\n      <left-panel\n        [todo]=\"todo\"\n        [done]=\"done\"\n        (setArticle)=\"getArticle($event)\"\n      ></left-panel>\n    </md-sidenav>\n\n    <md-sidenav #sidenav mode=\"side\" opened=\"true\" align=\"end\">\n      <right-panel\n        (setTag)=\"setTag($event)\"\n      ></right-panel>\n    </md-sidenav>\n\n    <div class=\"workspace\" *ngIf=\"article\">\n      <md-toolbar>\n        <md-input-container >\n          <input mdInput placeholder=\"Category\" [(ngModel)]=\"article.category\">\n        </md-input-container>\n        <md-input-container>\n          <input mdInput placeholder=\"Location\" [(ngModel)]=\"article.location\">\n        </md-input-container>\n        <button md-raised-button color=\"primary\" (click)=\"saveArticle()\">\n          Save\n        </button>\n      </md-toolbar>\n      <workspace\n        [tag]= \"tag\" \n        [color]= \"color\" \n        [article]= \"article\" \n      ></workspace>\n    </div>\n\n  </md-sidenav-container>\n    ",
+        styles: ["\n    .container {\n      display: flex; \n    }\n\n    md-input-container{\n      margin-left:10px\n    }\n\n    button{\n      margin-left:20px\n    }\n\n    .right {\n      background:lightcyan;\n      min-width: 140px;\n      max-width: 200px;\n      padding: 1em;\n    }\n\n    .workspace {\n      background:lightyellow;\n      padding: 1em;\n      width: 100%;\n    }\n\n  "]
     }),
     __metadata("design:paramtypes", [articles_service_1.ArticlesService])
 ], AppComponent);

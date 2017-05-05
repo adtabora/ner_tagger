@@ -1,0 +1,5 @@
+files/**
+**.pyc
+**.js
+node_modules/**
+**.db

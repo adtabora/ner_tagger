@@ -16,11 +16,18 @@ var WordComponent = (function () {
         this.tagged = false;
     }
     WordComponent.prototype.ngOnInit = function () {
+        var colors = {
+            Loc: "warn",
+            Per: "accent",
+            Org: "primary",
+            Misc: "none",
+        };
         if (this.word.tag == "none") {
             this.tagged = false;
         }
         else {
             this.tagged = true;
+            this.color = colors[this.word.tag];
         }
     };
     return WordComponent;
@@ -32,7 +39,7 @@ __decorate([
 WordComponent = __decorate([
     core_1.Component({
         selector: 'word-tag',
-        template: "\n    <div class=\"text-word\" *ngIf=\"!tagged\">\n        {{word.word}}&nbsp;\n    </div>\n    <md-chip selected=\"true\" *ngIf=\"tagged\" [color]=\"word.color\">\n        {{word.word}}\n    </md-chip>\n    ",
+        template: "\n    <div class=\"text-word\" *ngIf=\"!tagged\">\n        {{word.word}}&nbsp;\n    </div>\n    <md-chip selected=\"true\" *ngIf=\"tagged\" [color]=\"color\">\n        {{word.word}}\n    </md-chip>\n    ",
         styles: ["\n    .text-word:hover {\n        background-color: lightblue;\n    }\n    "]
     })
 ], WordComponent);

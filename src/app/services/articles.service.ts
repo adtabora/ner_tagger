@@ -27,21 +27,21 @@ export class ArticlesService {
         return this.http.get(this.getUrl+id)
                .toPromise()
                .then(function(response){
-                    console.log(response.json());
+                    
                     return response.json();
                })
                .catch(this.handleError);
     }
 
     //TODO: implement Save Article.
-    saveArticle(id:number,sentences:any[]): any{
+    saveArticle(article:any): any{
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(this.saveUrl,{id:id, sentences:sentences}, options)
+        return this.http.post(this.saveUrl,article, options)
                .toPromise()
                .then(function(response){
-                    console.log(response.json());
+                    
                     return response.json();
                })
                .catch(this.handleError);

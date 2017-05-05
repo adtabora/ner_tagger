@@ -22,6 +22,12 @@ import { ArticlesService } from './services/articles.service';
 
     <div class="workspace" *ngIf="article">
       <md-toolbar>
+        <md-input-container >
+          <input mdInput placeholder="Category" [(ngModel)]="article.category">
+        </md-input-container>
+        <md-input-container>
+          <input mdInput placeholder="Location" [(ngModel)]="article.location">
+        </md-input-container>
         <button md-raised-button color="primary" (click)="saveArticle()">
           Save
         </button>
@@ -40,6 +46,13 @@ import { ArticlesService } from './services/articles.service';
       display: flex; 
     }
 
+    md-input-container{
+      margin-left:10px
+    }
+
+    button{
+      margin-left:20px
+    }
 
     .right {
       background:lightcyan;
@@ -90,8 +103,8 @@ export class AppComponent {
   getArticle(id:number):void{
     var self = this;
     this.articleService.getArticle(id).then(function(article:any){
-      console.log("----")
-      console.log(article)
+      // console.log("----")
+      // console.log(article)
       self.article = article
 
     });
@@ -100,12 +113,29 @@ export class AppComponent {
     saveArticle():void{
     var self = this;
 
-    this.articleService.saveArticle(this.article.id,this.article.sentences)
+    this.articleService.saveArticle(this.article )
     .then(function(response:any){
-      console.log("----")
-      console.log(response)
-      this.getArticleList()
+      // console.log("----")
+      // console.log(response)
+      // self.getArticleList()
+      self.moveToDone(self.article)
     });
+  }
+
+  moveToDone(article: any){
+    this.done.push({
+      id: article.id, 
+      title: "Article " + article.id
+    });
+
+    let index = this.todo.findIndex(art=> art.id = article.id);
+    console.log("INDEX-----")
+    console.log(index)
+    if (index > -1) {
+      this.todo.splice(index, 1);
+    }
+
+    this.getArticle(this.todo[0].id)
   }
 
   constructor(private articleService: ArticlesService) { }

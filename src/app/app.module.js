@@ -22,6 +22,7 @@ var right_component_1 = require("./right/right.component");
 var workspace_component_1 = require("./workspace/workspace.component");
 var word_component_1 = require("./workspace/word.component");
 var material_5 = require("@angular/material");
+var material_6 = require("@angular/material");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -38,7 +39,8 @@ AppModule = __decorate([
             material_1.MdButtonModule,
             material_1.MdListModule,
             material_2.MdIconModule, material_3.MdSidenavModule,
-            material_5.MdChipsModule, material_4.MdToolbarModule
+            material_5.MdChipsModule, material_4.MdToolbarModule,
+            material_6.MdInputModule
         ],
         declarations: [
             app_component_1.AppComponent, left_component_1.LeftPanelComponent, right_component_1.RightPanelComponent, workspace_component_1.WorkspaceComponent, word_component_1.WordComponent
