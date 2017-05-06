@@ -9,7 +9,7 @@ import json
 
 def process_articles():
     print "- read articles csv"
-    base_df = pd.read_csv("../files/articles.csv")    
+    base_df = pd.read_csv("./files/articles.csv")    
 
     print "- processing articles"
     articles = []
@@ -36,10 +36,11 @@ def process_articles():
 
     print "- saving to DB"
     db = DB()
-    # db.createTables()
+    if not db.checkTables():
+        print "- creating Tables"
+        db.createTables()
     db.insertArticles(articles)
     db.close()
 
     print "- Done."
 
-process_articles()
