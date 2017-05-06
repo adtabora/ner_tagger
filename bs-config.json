@@ -3,7 +3,8 @@
     "baseDir": "src",
     "routes": {
       "/node_modules": "node_modules",
-      "/files": "files"
+      "/files": "files",
+      "/css": "css"
     }
   }
 }
