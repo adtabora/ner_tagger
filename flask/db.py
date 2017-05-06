@@ -70,6 +70,15 @@ class DB:
             }
         
         return article
+
+
+    def checkTables(self):
+        sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='ARTICLE';"
+
+        cursor = self.conn.execute(sql)
+        for row in cursor:
+            return True
+        return False
         
         
     def close(self):
