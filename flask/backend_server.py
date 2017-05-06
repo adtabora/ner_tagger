@@ -17,8 +17,8 @@ from db import DB
 def getArticleList():
     
     db = DB()
-    todo = db.listArticles(100, 200, reviewed=False)
-    done = db.listArticles(0, 200, reviewed=True)
+    todo = db.listArticles(0, 100, reviewed=False)
+    done = db.listArticles(0, 100, reviewed=True)
     db.close()
 
     return jsonify({"todo":todo, "done":done})
