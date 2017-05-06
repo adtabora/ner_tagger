@@ -1,5 +1,7 @@
 files/**
 **.pyc
 **.js
+**.js.map
 node_modules/**
 **.db
+!systemjs**
