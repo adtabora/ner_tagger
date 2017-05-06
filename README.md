@@ -17,18 +17,18 @@ Right now this is an alpha version as this project is still work in progress.
 ### Installation
   - run `npm install` to install node and angular dependencies
   - place articles.csv into the /files directory
-  - `pip install flask flask_cors sqlite3 nltk bs4 pandas numpy`
-  - run `python ./createDB.py` to create and populate the Database based on the articles.csv
+  - run `pip install flask flask_cors sqlite3 nltk bs4 pandas numpy`
+  - run `python ./createDB.py` to create and populate the Database based on the articles.csv
   
 ### Run servers
-  - run `python ./flask/articles.py` to start the backend server
-  - run `npm start` to start the nodejs server that will serve the angular app
+  - run `python ./flask/articles.py` to start the backend server
+  - run `npm start` to start the nodejs server that will serve the angular app
   
   
 ### articles.csv
 The articles.csv file should have the following columns:
-- id: <integer> 
-- title: <string>
-- content: <string>
+  - id: <integer> 
+  - title: <string>
+  - content: <string>
   
 
