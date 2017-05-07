@@ -25,7 +25,7 @@ def exportCategory():
         text = soup.get_text().replace("\n","")
 
         #add a row 
-        data.append( [art_index, raw_title, raw_text, articles[art_index][2]] )
+        data.append( [art_index, raw_title, text, articles[art_index][2]] )
 
     articles_df = pd.DataFrame(data,columns=["id","title","content","category"])
 
