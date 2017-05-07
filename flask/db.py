@@ -84,4 +84,34 @@ class DB:
     def close(self):
         self.conn.close()
 
+    #Generic list articles that receives filter values which will be concatenated with an AND operator
+    #columns is in the format of [ ("COLUNM_NAME, "OPERATOR", "VALUE" ) ... ]
+    def getArticles(self, filters):
+        sql = '''
+        select ID, TITLE, CATEGORY, DATE, SENTENCES, REVIEWED from ARTICLE
+        '''
+        #where clause
+        where = [ "%s%s ?"%(f[0],f[1]) for f in filters ]
+        values = [ f[2] for f in filters ]
+        sql += " where " + " and ".join(where)
+        #execute
+        cursor = self.conn.execute( sql, values )
+        #return 
+        def format_article(row):
+            return {
+                "id": row[0],
+                "title": row[1],
+                "category":row[2],
+                "date":row[3],
+                "sentences":row[4],
+                "reviewed":row[5],
+            }
+
+        #cursor 
+        articles = cursor.fetchall()
+
+        return articles
+
+
+
 
