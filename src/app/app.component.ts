@@ -125,7 +125,7 @@ export class AppComponent {
     .then(function(response:any){
       // console.log("----")
       // console.log(response)
-      self.getArticleList(this.filters);
+      self.getArticleList(self.filters);
 
     });
   }

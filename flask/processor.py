@@ -14,8 +14,9 @@ def process_articles():
     print "- processing articles"
     articles = []
     for art_index, article in base_df.iterrows():
+        # Content
         raw_text = article["content"]
-        raw_title = unicode(article["title"],"utf8")
+        
 
         soup = bs4.BeautifulSoup(raw_text, 'html.parser')
         text = soup.get_text().replace("\n","")
@@ -23,7 +24,11 @@ def process_articles():
         sentences = [wordpunct_tokenize(sent) for sent in sentences ]
         for index in range(len(sentences)):
             sentences[index] = [ [word,"none"] for word in sentences[index]]
-
+        # Title
+        raw_title = unicode(article["title"],"utf8")
+        title = json.dumps([ [word,"none"] for word in raw_title])
+        title = [ [word,"none"] for word in title ]
+        
         #append
         articles.append([
             art_index,

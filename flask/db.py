@@ -27,16 +27,17 @@ class DB:
     def insertArticles(self, articles):
         self.conn.executemany('''
         INSERT INTO ARTICLE (ID,TITLE,CATEGORY,DATE, SENTENCES, REVIEWED) 
-        VALUES (?,?,?,?,?,?)''', articles);
+        VALUES (?,?,?,?,?,?)''', articles)
         self.conn.commit()
         print "Inserted Article"
 
     def updateArticle(self, article):
         sentences = json.dumps(article["sentences"])
-        values = (article["category"], sentences, int(article["reviewed"]), article["id"])
+        title = json.dumps(article["title"])
+        values = (title, article["category"], sentences, int(article["reviewed"]), article["id"])
 
         self.conn.execute('''
-        UPDATE ARTICLE set CATEGORY = ?, SENTENCES = ?, REVIEWED = ? where ID=?
+        UPDATE ARTICLE set TITLE = ?, CATEGORY = ?, SENTENCES = ?, REVIEWED = ? where ID=?
         ''', values)
         self.conn.commit()
         print "Updated Article"
@@ -63,7 +64,7 @@ class DB:
         for row in cursor:
             article = {
                 "id": row[0],
-                "title": row[1],
+                "title": json.loads(row[1]),
                 "category": row[2],
                 "date": row[3],
                 "sentences": json.loads(row[4]),

@@ -72,6 +72,9 @@ def getArticle(id):
 
     for sent in range(len(article["sentences"])):
         article["sentences"][sent] = [{"word": word[0],"tag":word[1]} for word in article["sentences"][sent]] 
+
+    article["title"] = [{"word": word[0],"tag":word[1]} for word in article["title"]] 
+
     db.close()
     return jsonify(article)
 
@@ -85,7 +88,9 @@ def saveArticle():
     for sent in range(len(json_obj["sentences"])): 
         json_obj["sentences"][sent] = [ [word["word"],word["tag"] ] for word in json_obj["sentences"][sent] ]
 
-    # json_obj["reviewed"] = True
+    json_obj["title"] = [ [word["word"],word["tag"] ] for word in json_obj["title"] ]
+
+
 
     db = DB()
     db.updateArticle(json_obj)
