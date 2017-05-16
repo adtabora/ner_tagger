@@ -63,7 +63,7 @@ export class LeftPanelComponent {
   @Output() setArticle = new EventEmitter<Number>();
   @Output() filterArticles = new EventEmitter<any>();
 
-  categories = ["all", "Criminal","Other","None" ];
+  categories = ["all","None", "Criminal","Other","Criminal-Other" ];
 
   categoryFilter: String
   tagFilter = "all"

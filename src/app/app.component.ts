@@ -23,9 +23,13 @@ import { ArticlesService } from './services/articles.service';
 
     <div class="workspace" *ngIf="article">
       <md-toolbar>
-        <md-input-container >
-          <input mdInput placeholder="Category" [(ngModel)]="article.category">
-        </md-input-container>
+        <md-select placeholder="Category" 
+          [(ngModel)]="article.category" >
+            <md-option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </md-option>
+          </md-select>
+        
         <md-input-container>
           <input mdInput placeholder="Location" [(ngModel)]="article.location" disabled="true">
         </md-input-container>
@@ -82,6 +86,8 @@ export class AppComponent {
   
   article: any;
   filters: any;
+
+  categories = [ "Criminal","Other","Criminal-Other" ];
 
   ngOnInit(): void{
     // this.getArticleList()
