@@ -84,16 +84,31 @@ class DB:
     def close(self):
         self.conn.close()
 
+
+    value_operators = ["=", ">",">=" ,"<","<=", "!="]
     #Generic list articles that receives filter values which will be concatenated with an AND operator
     #columns is in the format of [ ("COLUNM_NAME, "OPERATOR", "VALUE" ) ... ]
-    def getArticles(self, filters):
+    def getArticles(self, filters, columns = None, limit=None, offset=None ):
+
+        if columns == None:
+            columns = ["ID", "TITLE", "CATEGORY", "DATE", "SENTENCES", "REVIEWED"]
+
         sql = '''
-        select ID, TITLE, CATEGORY, DATE, SENTENCES, REVIEWED from ARTICLE
-        '''
+        select %s from ARTICLE
+        ''' % ", ".join(columns)
         #where clause
-        where = [ "%s%s ?"%(f[0],f[1]) for f in filters ]
-        values = [ f[2] for f in filters ]
-        sql += " where " + " and ".join(where)
+        values =[]
+        if len(filters) > 0 :
+            where = [ "%s%s ?"%(f[0],f[1]) for f in filters if f[1] in self.value_operators ]
+            where += [ "%s %s %s"%(f[0],f[1],f[2]) for f in filters if f[1] in ["IS", "IS NOT"] ]
+            values = [ f[2] for f in filters if f[1] in self.value_operators ]
+            sql += " where " + " and ".join(where)
+        if limit:
+            sql += " limit " + str(limit) 
+        if offset:
+            sql += " offset " + str(offset)
+
+        print sql
         #execute
         cursor = self.conn.execute( sql, values )
         #return 

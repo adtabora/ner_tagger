@@ -33,8 +33,7 @@ export class WordComponent {
             this.tagged = false
         }else{
             this.tagged = true
-            
-            this.color = colors[ this.word.tag ]
+            this.color = colors[ this.word.tag.substr(2) ]
         }
     }
 }

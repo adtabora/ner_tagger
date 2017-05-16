@@ -11,17 +11,59 @@ import numpy as np
 
 from db import DB
 
-
+@app.route("/test")
+def test():
+    return jsonify({"test" : "hello tester", 
+        "deep":{
+            "id": 1,
+            "items" : [ 1,2,3,4,5],
+            "obj": {
+                "name": "object1",
+                "description": "description of object"
+            }
+        }
+    })
 
 @app.route("/article/list")
 def getArticleList():
+    tagged = request.args["tag"]
+    category = request.args["category"]
+    limit = request.args["limit"]
+    offset = request.args["offset"]
+
+    filters = []
+    #TODO: change field REVIEWED with tagged
+    if tagged == "tagged":
+        filters.append( ("REVIEWED","=","1") )
+    elif tagged == "untagged":
+        filters.append( ("REVIEWED","=","0") )
     
+    # elif tagged == "all":
+        
+    if category == "None":
+        filters.append( ("CATEGORY","=", "") )
+    elif category != "all":
+        filters.append( ("CATEGORY","=",category) )
+    
+
+
+    print "-----------"
+    print filters
+    print 
+    print 
+
     db = DB()
-    todo = db.listArticles(0, 100, reviewed=False)
-    done = db.listArticles(0, 100, reviewed=True)
+    rows = db.getArticles(filters, columns=["ID"], limit=limit, offset=offset)
+
+    count = db.getArticles(filters, columns=["count(ID)"])[0][0]
     db.close()
 
-    return jsonify({"todo":todo, "done":done})
+    data = [{"id": row[0], "title": "Article "+str(row[0]) } for row in rows]
+
+    return jsonify({
+        "count": count,
+        "data": data
+    })
 
 @app.route("/article/get/<id>")
 def getArticle(id):

@@ -9,8 +9,9 @@ import { ArticlesService } from './services/articles.service';
     <md-sidenav #sidenav mode="side" opened="true">
       <left-panel
         [todo]="todo"
-        [done]="done"
+        [count]="count"
         (setArticle)="getArticle($event)"
+        (filterArticles)="getArticleList($event)"
       ></left-panel>
     </md-sidenav>
 
@@ -26,7 +27,7 @@ import { ArticlesService } from './services/articles.service';
           <input mdInput placeholder="Category" [(ngModel)]="article.category">
         </md-input-container>
         <md-input-container>
-          <input mdInput placeholder="Location" [(ngModel)]="article.location">
+          <input mdInput placeholder="Location" [(ngModel)]="article.location" disabled="true">
         </md-input-container>
         <button md-raised-button color="primary" (click)="saveArticle()">
           Save
@@ -76,12 +77,13 @@ export class AppComponent {
   tag = "Per";
   color = "warn";
 
-  todo : any[]
-  done: any[]
-  article: any
+  todo : any[];
+  count : number;
+  
+  article: any;
 
   ngOnInit(): void{
-    this.getArticleList()
+    // this.getArticleList()
   }
 
   setTag(obj:any):void{
@@ -89,14 +91,18 @@ export class AppComponent {
     this.color = obj.color;
   }
 
-  getArticleList():void{
+  getArticleList(filters: any):void{
     var self = this;
-    this.articleService.listArticles().then(function(lists){
-      console.log("----")
-      console.log(lists)
-      self.todo = lists.todo; 
-      self.done = lists.done; 
-      self.getArticle(self.todo[0].id)
+    this.articleService.listArticles(filters).then(function(response){
+      self.todo = response.data; 
+      self.count = response.count;
+      if( self.todo.length > 0 ){
+        self.getArticle(self.todo[0].id);
+      } else {
+        self.article = null
+      }
+        
+      
     });
   }
 
