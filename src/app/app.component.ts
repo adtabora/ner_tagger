@@ -81,6 +81,7 @@ export class AppComponent {
   count : number;
   
   article: any;
+  filters: any;
 
   ngOnInit(): void{
     // this.getArticleList()
@@ -92,6 +93,7 @@ export class AppComponent {
   }
 
   getArticleList(filters: any):void{
+    this.filters = filters;
     var self = this;
     this.articleService.listArticles(filters).then(function(response){
       self.todo = response.data; 
@@ -116,23 +118,33 @@ export class AppComponent {
     });
   }
 
-    saveArticle():void{
+  saveArticle():void{
     var self = this;
-
+    this.article.reviewed = this.isArticleTagged();
     this.articleService.saveArticle(this.article )
     .then(function(response:any){
       // console.log("----")
       // console.log(response)
-      // self.getArticleList()
-      self.moveToDone(self.article)
+      self.getArticleList(this.filters);
+
     });
   }
 
+  //TODO: implement this function
+  isArticleTagged():Boolean{
+    for (var i = 0; i < this.article.sentences.length; i++) {
+      var sentence = this.article.sentences[i];
+      for (var j = 0; j < sentence.length; j++) {
+        if(sentence[j].tag != "none"){
+          return true;
+        }
+      }
+    }
+    return false
+  }
+
   moveToDone(article: any){
-    this.done.push({
-      id: article.id, 
-      title: "Article " + article.id
-    });
+    
 
     let index = this.todo.findIndex(art=> art.id = article.id);
     console.log("INDEX-----")

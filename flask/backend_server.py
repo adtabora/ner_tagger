@@ -85,7 +85,7 @@ def saveArticle():
     for sent in range(len(json_obj["sentences"])): 
         json_obj["sentences"][sent] = [ [word["word"],word["tag"] ] for word in json_obj["sentences"][sent] ]
 
-    json_obj["reviewed"] = True
+    # json_obj["reviewed"] = True
 
     db = DB()
     db.updateArticle(json_obj)
