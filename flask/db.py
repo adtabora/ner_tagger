@@ -112,18 +112,8 @@ class DB:
         print sql
         #execute
         cursor = self.conn.execute( sql, values )
-        #return 
-        def format_article(row):
-            return {
-                "id": row[0],
-                "title": row[1],
-                "category":row[2],
-                "date":row[3],
-                "sentences":row[4],
-                "reviewed":row[5],
-            }
 
-        #cursor 
+        #get array 
         articles = cursor.fetchall()
 
         return articles
