@@ -1,4 +1,5 @@
 import { Component,Output,EventEmitter } from '@angular/core';
+import {tagTypes} from '../workspace/word.class'
 
 
 
@@ -7,28 +8,33 @@ import { Component,Output,EventEmitter } from '@angular/core';
   template: `
   <div style="margin:10px">
     <md-chip-list class="mat-chip-list-stacked">
-      <md-chip color="warn" selected="true" (click)="selectLoc()" >
-        Loc
-      </md-chip>
-      <md-chip color="accent" selected="true" (click)="selectPer()" >
-        Per
-      </md-chip>
-      <md-chip color="primary" selected="true" (click)="selectOrg()" >
-        Org
-      </md-chip>
-      <md-chip color="none" selected="true" (click)="selectMisc()" >
-        Misc
+      <md-chip *ngFor="let tag of tagTypes" 
+        [style.background] = "tag[1]" 
+         selected="true" (click)="selectTag(tag)" >
+        {{tag[0]}}
       </md-chip>
     </md-chip-list>
   </div>
-    
-    `
+    `,
+  styles: [` 
+    .chip-black {
+      background-color: black;
+    }
+  `]
 })
 
 export class RightPanelComponent {
   title = 'right';
+  tagTypes = tagTypes;
 
   @Output() setTag = new EventEmitter<any>();
+
+  selectTag(tag: string):void{
+    this.setTag.emit({
+      tag:tag[0],
+      color:tag[1]
+    });
+  }
 
   selectLoc():void{
     this.setTag.emit({
@@ -56,6 +62,9 @@ export class RightPanelComponent {
       tag:"Misc",
       color:"none"
     });
+
+
+    
   }
   
 }

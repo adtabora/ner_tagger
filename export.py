@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
-
+import bs4
 from flask.db import DB
 
 
@@ -10,8 +10,8 @@ from flask.db import DB
 def exportCategory():
     db = DB()
     # get all of the tagged articles
-    filters = [("REVIEWED","=",1)]
-    articles = db.getArticles(filters, columns=["ID", "CATEGORY"] )
+    filters = [("CATEGORY", "IN", "('Criminal','Other')")] #[("REVIEWED","=",1)]
+    articles = db.getArticles(filters, columns=["ID", "CATEGORY","DATE"] )
     db.close()
 
 
@@ -37,33 +37,35 @@ def exportCategory():
         text = soup.get_text().replace("\n","")
 
         #add a row 
-        data.append( [art_index, raw_title, text, articles[index][1]] )
+        data.append( [art_index, raw_title, text, articles[index][1],article["date"]] )
         index += 1
 
-    articles_df = pd.DataFrame(data,columns=["id","title","content","category"])
+    articles_df = pd.DataFrame(data,columns=["id","title","content","category","date"])
 
     articles_df.to_csv("./files/documents.csv",index=False, encoding='utf-8')
 
 def exportTags():
     db = DB()
     # get all of the tagged articles that are category criminal
-    filters = [("REVIEWED","=",1), ("CATEGORY", "=", "Criminal")]
-    articles = db.getArticles(filters, columns=["ID","TITLE","SENTENCES"] )
+    # filters = [ ("CATEGORY", "=", "Criminal")] #("REVIEWED","=",1)
+    filters = [ ("CATEGORY", "=", "Criminal-Other")] #("REVIEWED","=",1)
+    articles = db.getArticles(filters, columns=["ID","TITLE","SENTENCES","RELATIONSHIPS"] )
     db.close()
     #for convinience create a DataFrame
     print len(articles)
-    df = pd.DataFrame(articles,columns=["article_id","title","content"])
+    df = pd.DataFrame(articles,columns=["article_id","title","content","relationships"])
     print df.shape
 
     #convert title and content strings into a json
-    df.loc[:,"title"] = df.title.apply(lambda x: json.loads(x) )
+    df.loc[:,"title"] = df.title.apply(lambda x: json.loads(x))
     df.loc[:,"content"] = df.content.apply(lambda x: json.loads(x) )
+    df.loc[:,"relationships"] = df.relationships.apply(lambda x: json.loads(x) if x != None else []  )
 
 
-    df.to_csv("./files/criminal_articles.csv",index=False, encoding='utf-8')
+    df.to_csv("./files/criminal_hn_articles.csv",index=False)
 
 
 
 
-# exportCategory()    
+exportCategory()    
 exportTags()

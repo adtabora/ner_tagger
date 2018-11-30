@@ -14,6 +14,7 @@ import { AppComponent }  from './app.component';
 import { LeftPanelComponent }  from './left/left.component';
 import { RightPanelComponent }  from './right/right.component';
 import { WorkspaceComponent }  from './workspace/workspace.component';
+import { RelationshipsPanelComponent }  from './bottom/relationships.component';
 import { WordComponent }  from './workspace/word.component';
 import {MdChipsModule} from '@angular/material'
 import {MdInputModule, MdSelectModule} from '@angular/material';
@@ -32,7 +33,7 @@ import {MdInputModule, MdSelectModule} from '@angular/material';
     MdInputModule, MdSelectModule
   ],
   declarations: [
-    AppComponent, LeftPanelComponent, RightPanelComponent, WorkspaceComponent, WordComponent
+    AppComponent, LeftPanelComponent, RightPanelComponent, WorkspaceComponent, RelationshipsPanelComponent, WordComponent
   ],
   bootstrap: [ AppComponent ]
 })

@@ -1,7 +1,7 @@
 import bs4 #beautiful soup
 import pandas as pd
 import numpy as np
-from nltk.tokenize import wordpunct_tokenize
+from nltk.tokenize import wordpunct_tokenize, sent_tokenize
 
 from db import DB
 import json
@@ -19,8 +19,12 @@ def process_articles():
         
 
         soup = bs4.BeautifulSoup(raw_text, 'html.parser')
-        text = soup.get_text().replace("\n","")
-        sentences = text.split(".")
+        # text = soup.get_text().replace("\n","")
+        # sentences = text.split(".")
+        text = soup.get_text()
+        sentences = sent_tokenize(text)
+
+
         sentences = [wordpunct_tokenize(sent) for sent in sentences ]
         for index in range(len(sentences)):
             sentences[index] = [ [word,"none"] for word in sentences[index]]

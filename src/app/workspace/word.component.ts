@@ -1,5 +1,5 @@
 import { Component,Input } from '@angular/core';
-import {tagged_word} from './word.class'
+import {tagged_word, tagTypes} from './word.class'
 
 @Component({
   selector: 'word-tag',
@@ -7,7 +7,7 @@ import {tagged_word} from './word.class'
     <div class="text-word" *ngIf="!tagged">
         {{word.word}}&nbsp;
     </div>
-    <md-chip selected="true" *ngIf="tagged" [color]="color">
+    <md-chip selected="true" *ngIf="tagged" [style.background] = "color" >
         {{word.word}}
     </md-chip>
     `,
@@ -23,17 +23,16 @@ export class WordComponent {
     tagged= false
     color: string
     ngOnInit(): void{
-        let colors = {
-            Loc: "warn",
-            Per: "accent",
-            Org: "primary",
-            Misc: "none",
-        }
         if( this.word.tag == "none"){
             this.tagged = false
         }else{
             this.tagged = true
-            this.color = colors[ this.word.tag.substr(2) ]
+
+            let tag = tagTypes.find(element => {
+                return element[0] == this.word.tag.substr(2);
+            });
+
+            this.color = tag[1]
         }
     }
 }

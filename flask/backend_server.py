@@ -70,6 +70,31 @@ def getArticle(id):
     db = DB()
     article = db.getArticle(id)
 
+    #get Entities
+    entities = []
+    for sent in article["sentences"]:
+        for word in sent:
+            if word[1][0] == "B":
+                entities.append({"word": word[0].lower(),"tag":word[1]})
+            elif word[1][0] == "I":
+                entities[-1]["word"] += " " + word[0].lower()
+
+    for word in article["title"]:
+            if word[1][0] == "B":
+                entities.append({"word": word[0].lower(),"tag":word[1]})
+            elif word[1][0] == "I":
+                entities[-1]["word"] += " " + word[0].lower()            
+    
+    #eliminate duplicates
+    unique_entities = []
+    for itm in entities:
+        if itm not in unique_entities:
+            unique_entities.append(itm)
+
+    
+    article["entities"] = unique_entities
+
+    #Format entities
     for sent in range(len(article["sentences"])):
         article["sentences"][sent] = [{"word": word[0],"tag":word[1]} for word in article["sentences"][sent]] 
 
@@ -97,8 +122,6 @@ def saveArticle():
     db.close()
 
     return jsonify({"saved":True})
-
-
 
 if __name__ == "__main__":
     app.run()

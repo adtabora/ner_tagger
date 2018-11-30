@@ -17,7 +17,8 @@ class DB:
             CATEGORY        CHAR(4),
             DATE            TEXT,
             SENTENCES       TEXT,
-            REVIEWED        CHAR(1)
+            REVIEWED        CHAR(1),
+            RELATIONSHIPS   TEXT
         );
         ''')
         print "Table created successfully";
@@ -34,10 +35,14 @@ class DB:
     def updateArticle(self, article):
         sentences = json.dumps(article["sentences"])
         title = json.dumps(article["title"])
-        values = (title, article["category"], sentences, int(article["reviewed"]), article["id"])
+        relationships = json.dumps(article["relationships"])
+        print "--------"
+        print article["relationships"]
+        values = (title, article["category"], sentences, int(article["reviewed"]), relationships,
+        article["id"] )
 
         self.conn.execute('''
-        UPDATE ARTICLE set TITLE = ?, CATEGORY = ?, SENTENCES = ?, REVIEWED = ? where ID=?
+        UPDATE ARTICLE set TITLE = ?, CATEGORY = ?, SENTENCES = ?, REVIEWED = ?, RELATIONSHIPS = ? where ID=?
         ''', values)
         self.conn.commit()
         print "Updated Article"
@@ -57,7 +62,7 @@ class DB:
         print "--- Values---"
         print values
         cursor = self.conn.execute('''
-        SELECT ID, TITLE, CATEGORY, DATE, SENTENCES  from ARTICLE
+        SELECT ID, TITLE, CATEGORY, DATE, SENTENCES, RELATIONSHIPS  from ARTICLE
         WHERE ID = ?
         ''',values)
 
@@ -68,7 +73,10 @@ class DB:
                 "category": row[2],
                 "date": row[3],
                 "sentences": json.loads(row[4]),
+                "relationships": json.loads(row[5]) if row[5] != None else []
             }
+            print "----------"
+            print row[5]
         
         return article
 
@@ -100,8 +108,8 @@ class DB:
         #where clause
         values =[]
         if len(filters) > 0 :
-            where = [ "%s%s ?"%(f[0],f[1]) for f in filters if f[1] in self.value_operators ]
-            where += [ "%s %s %s"%(f[0],f[1],f[2]) for f in filters if f[1] in ["IS", "IS NOT"] ]
+            where = [ "%s %s ?"%(f[0],f[1]) for f in filters if f[1] in self.value_operators ]
+            where += [ "%s %s %s"%(f[0],f[1],f[2]) for f in filters if f[1] in ["IS", "IS NOT","IN"] ]
             values = [ f[2] for f in filters if f[1] in self.value_operators ]
             sql += " where " + " and ".join(where)
         if limit:

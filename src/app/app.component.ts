@@ -20,8 +20,8 @@ import { ArticlesService } from './services/articles.service';
         (setTag)="setTag($event)"
       ></right-panel>
     </md-sidenav>
-
-    <div class="workspace" *ngIf="article">
+    <div *ngIf="article">
+    <div class="workspace" >
       <md-toolbar>
         <md-select placeholder="Category" 
           [(ngModel)]="article.category" >
@@ -42,11 +42,32 @@ import { ArticlesService } from './services/articles.service';
         [color]= "color" 
         [article]= "article" 
       ></workspace>
+      
     </div>
+    <relationships-panel
+      [entities]= "article.entities"
+      [relationships]="article.relationships"
+    ></relationships-panel>
+    </div>
+    
 
   </md-sidenav-container>
     `,
   styles:[`
+    workspace {
+      height: 64%;
+      position: fixed;
+      top: 16%;
+      overflow: scroll;
+    }
+    relationships-panel {
+      height: 20%;
+      position: fixed;
+      bottom: 0;
+      background: white;
+      width: 100%;
+      overflow: scroll;
+    }
     .container {
       display: flex; 
     }
@@ -88,6 +109,13 @@ export class AppComponent {
   filters: any;
 
   categories = [ "Criminal","Other","Criminal-Other" ];
+
+  entities= ['Col Kennedy','City Tegucigalpa'];
+  relationships = [
+    ['Col Loarque', 'City Tegucigalpa'],
+    ['Col Bella Oriente', 'City Tegucigalpa'],
+    ['Col Florencia Norte', 'City Tegucigalpa']
+  ]
 
   ngOnInit(): void{
     // this.getArticleList()
@@ -131,7 +159,8 @@ export class AppComponent {
     .then(function(response:any){
       // console.log("----")
       // console.log(response)
-      self.getArticleList(self.filters);
+      // TODO: Bug here, it should refresh but at the same time it should stay with the saved item if its only modifying it.
+      //self.getArticleList(self.filters);
 
     });
   }

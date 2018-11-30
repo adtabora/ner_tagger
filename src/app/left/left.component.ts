@@ -35,24 +35,29 @@ import { Component, Input, Output,EventEmitter } from '@angular/core';
         </md-toolbar-row>
       </md-toolbar>
 
-      <md-list dense *ngIf="todo" style="height:60%;overflow-y:scroll" >
+      <md-nav-list dense *ngIf="todo" style="height:60%;overflow-y:scroll" >
         <h3 md-subheader>Search Result</h3>
         <md-list-item *ngFor="let article of todo"
-          (click)="selectArticle(article)">
+          (click)="selectArticle(article)"
+          [class.selected-pink]="article==activeArticle"
+          >
             <md-icon md-list-icon>folder</md-icon>
             <p md-line class="demo-2"> {{article.title}} </p>
         </md-list-item>
-      </md-list>
+      </md-nav-list>
     
   
     
     `,
     styles:[`
-      md-toolbar-row: {
+      md-toolbar-row {
         height: 36px;
       }
-      .test: {
+      .test {
         height: 36px;
+      }
+      .selected-pink {
+        background-color: pink;
       }
     `]
 })
@@ -65,12 +70,15 @@ export class LeftPanelComponent {
 
   categories = ["all","None", "Criminal","Other","Criminal-Other" ];
 
+  activeArticle: any;
+
   categoryFilter: String
   tagFilter = "all"
   offset = 0
   limit = 100
 
   selectArticle(article:any):void{
+    this.activeArticle = article;
     this.setArticle.emit(article.id)
   }
   

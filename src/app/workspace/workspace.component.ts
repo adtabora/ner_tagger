@@ -28,6 +28,8 @@ import {tagged_word} from './word.class'
         <br/>
       </div>
     </div>
+
+    
     `,
     styles:[`
     .word:hover {
